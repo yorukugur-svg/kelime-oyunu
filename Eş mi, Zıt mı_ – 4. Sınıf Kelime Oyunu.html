@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eş mi, Zıt mı? – 4. Sınıf Kelime Oyunu</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#eef4ff;--card:#ffffff;--ink:#1d2b4f;--soft:#5c6a8f;--line:#d6e0f5;
+  --eş:#6c4de6;--eş-bg:#ece8ff;--zıt:#ff6b5b;--zıt-bg:#ffe9e6;
+  --ok:#1fa97a;--ok-bg:#d9f6ea;--bad:#d93f3f;--bad-bg:#ffe0e0;--sun:#ffc928;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121a33;--card:#1c2749;--ink:#f1f5ff;--soft:#a5b3d8;--line:#2f3d6b;
+    --eş:#a493ff;--eş-bg:#2b2760;--zıt:#ff8c7e;--zıt-bg:#4a2a30;
+    --ok:#4fd8a5;--ok-bg:#16443a;--bad:#ff7b7b;--bad-bg:#4d2428;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121a33;--card:#1c2749;--ink:#f1f5ff;--soft:#a5b3d8;--line:#2f3d6b;
+  --eş:#a493ff;--eş-bg:#2b2760;--zıt:#ff8c7e;--zıt-bg:#4a2a30;
+  --ok:#4fd8a5;--ok-bg:#16443a;--bad:#ff7b7b;--bad-bg:#4d2428;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Fredoka','Trebuchet MS',system-ui,sans-serif;min-height:100vh}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+main{max-width:520px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:24px;padding:22px}
+h1{font-size:2.3rem;line-height:1.1;margin:0 0 10px}
+p{font-size:1.1rem;line-height:1.5;margin:0 0 14px;color:var(--soft)}
+.pair{display:flex;gap:10px;margin:18px 0}
+.pair div{flex:1;border-radius:18px;padding:12px;font-weight:600;text-align:center}
+.pair .e{background:var(--eş-bg);color:var(--eş)}
+.pair .z{background:var(--zıt-bg);color:var(--zıt)}
+.pair b{display:block;font-size:2rem}
+button{font-family:inherit;cursor:pointer}
+.go{width:100%;border:0;border-radius:18px;background:var(--sun);color:#1d2b4f;font-size:1.4rem;font-weight:700;padding:16px;box-shadow:0 5px 0 #c99a00}
+.go:active{transform:translateY(4px);box-shadow:0 1px 0 #c99a00}
+:focus-visible{outline:3px solid var(--eş);outline-offset:3px}
+.top{display:flex;justify-content:space-between;align-items:center;font-weight:600;margin-bottom:10px}
+.bar{height:12px;border-radius:99px;background:var(--line);overflow:hidden;margin-bottom:16px}
+.bar i{display:block;height:100%;width:0;background:var(--ok);border-radius:99px;transition:width .4s}
+.tag{display:inline-block;border-radius:99px;padding:6px 16px;font-weight:600;font-size:1.05rem}
+.tag.e{background:var(--eş-bg);color:var(--eş)}
+.tag.z{background:var(--zıt-bg);color:var(--zıt)}
+.q{text-align:center}
+.sym{font-size:2.4rem;font-weight:700;margin:6px 0 0}
+.word{font-size:3rem;font-weight:700;margin:0 0 14px;word-break:break-word}
+.opts{display:grid;gap:10px}
+.opt{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:16px;font-size:1.35rem;font-weight:600;padding:14px}
+.opt:active:not(:disabled){transform:scale(.98)}
+.opt.ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.opt.bad{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.opt:disabled{cursor:default}
+.fb{min-height:3.2em;margin:14px 0 8px;font-size:1.15rem;font-weight:600;text-align:center}
+.fb.ok{color:var(--ok)}.fb.bad{color:var(--bad)}
+.hide{display:none}
+.stars{font-size:3rem;letter-spacing:6px;margin:8px 0}
+.big{font-size:3.4rem;font-weight:700}
+.center{text-align:center}
+.sel{display:flex;gap:8px;margin:0 0 16px}
+.sel button{flex:1;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:10px 4px;font-size:1rem;font-weight:600}
+.sel button[aria-pressed="true"]{border-color:var(--eş);background:var(--eş-bg);color:var(--eş)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <section id="start" class="card">
+    <h1>Eş mi, Zıt mı?</h1>
+    <p>Kelimeye bak, doğru cevabı bul. 150 kelime çifti, her turda 10 soru!</p>
+    <div class="pair">
+      <div class="e"><b>=</b>Eş anlam<br><small>güzel = hoş</small></div>
+      <div class="z"><b>↔</b>Zıt anlam<br><small>uzun ↔ kısa</small></div>
+    </div>
+    <div class="sel" role="group" aria-label="Oyun türü">
+      <button data-m="karma" aria-pressed="true">Karışık</button>
+      <button data-m="eş" aria-pressed="false">Eş anlam</button>
+      <button data-m="zıt" aria-pressed="false">Zıt anlam</button>
+    </div>
+    <button class="go" id="play">Başla!</button>
+  </section>
+
+  <section id="game" class="hide">
+    <div class="top"><span id="no">Soru 1/10</span><span id="sc">⭐ 0</span></div>
+    <div class="bar"><i id="pb"></i></div>
+    <div class="card q">
+      <span class="tag" id="tag"></span>
+      <div class="sym" id="sym"></div>
+      <div class="word" id="word"></div>
+      <div class="opts" id="opts"></div>
+      <div class="fb" id="fb" aria-live="polite"></div>
+      <button class="go hide" id="next">Sonraki</button>
+    </div>
+  </section>
+
+  <section id="end" class="card center hide">
+    <div class="stars" id="stars"></div>
+    <div class="big" id="final"></div>
+    <p id="msg"></p>
+    <button class="go" id="again">Tekrar oyna</button>
+  </section>
+</main>
+<script>
+// [tür, kelime, doğru cevap, yanlışlar]
+var D=[
+["eş","ad","isim"],
+["eş","affetmek","bağışlamak"],
+["eş","al","kırmızı"],
+["eş","anı","hatıra"],
+["eş","anıt","abide"],
+["eş","anlam","mana"],
+["eş","armağan","hediye"],
+["eş","arzu","istek"],
+["eş","asır","yüzyıl"],
+["eş","aş","yemek"],
+["eş","ayakkabı","pabuç"],
+["eş","barış","sulh"],
+["eş","baytar","veteriner"],
+["eş","bellek","hafıza"],
+["eş","beyaz","ak"],
+["eş","birey","fert"],
+["eş","cevap","yanıt"],
+["eş","cümle","tümce"],
+["eş","çağrı","davet"],
+["eş","çevre","etraf"],
+["eş","değer","kıymet"],
+["eş","deprem","zelzele"],
+["eş","derslik","sınıf"],
+["eş","doğa","tabiat"],
+["eş","doktor","hekim"],
+["eş","düş","rüya"],
+["eş","düşünce","fikir"],
+["eş","endişe","kaygı"],
+["eş","eser","yapıt"],
+["eş","esir","tutsak"],
+["eş","fakir","yoksul"],
+["eş","fayda","yarar"],
+["eş","görev","vazife"],
+["eş","güç","kuvvet"],
+["eş","güz","sonbahar"],
+["eş","hayat","yaşam"],
+["eş","hız","sürat"],
+["eş","hür","özgür"],
+["eş","ırmak","nehir"],
+["eş","ilave","ek"],
+["eş","imkân","olanak"],
+["eş","imtihan","sınav"],
+["eş","istiklal","bağımsızlık"],
+["eş","kabiliyet","yetenek"],
+["eş","kalp","yürek"],
+["eş","kanun","yasa"],
+["eş","kelime","sözcük"],
+["eş","kirli","pis"],
+["eş","konuk","misafir"],
+["eş","kural","kaide"],
+["eş","millet","ulus"],
+["eş","mutlu","mesut"],
+["eş","neden","sebep"],
+["eş","nefes","soluk"],
+["eş","neşe","sevinç"],
+["eş","okul","mektep"],
+["eş","onarım","tamir"],
+["eş","öğrenci","talebe"],
+["eş","öğretmen","muallim"],
+["eş","önder","lider"],
+["eş","öneri","teklif"],
+["eş","öykü","hikâye"],
+["eş","özlem","hasret"],
+["eş","rüzgâr","yel"],
+["eş","saygı","hürmet"],
+["eş","siyah","kara"],
+["eş","soru","sual"],
+["eş","şehir","kent"],
+["eş","şüphe","kuşku"],
+["eş","tedbir","önlem"],
+["eş","tören","merasim"],
+["eş","uçak","tayyare"],
+["eş","vatan","yurt"],
+["eş","yıl","sene"],
+["eş","zengin","varlıklı"],
+["zıt","acı","tatlı"],
+["zıt","aç","tok"],
+["zıt","açık","kapalı"],
+["zıt","ağır","hafif"],
+["zıt","akşam","sabah"],
+["zıt","alçak","yüksek"],
+["zıt","almak","vermek"],
+["zıt","alt","üst"],
+["zıt","arka","ön"],
+["zıt","artmak","azalmak"],
+["zıt","aşağı","yukarı"],
+["zıt","aydınlık","karanlık"],
+["zıt","az","çok"],
+["zıt","başlangıç","bitiş"],
+["zıt","bekâr","evli"],
+["zıt","beyaz","siyah"],
+["zıt","birleşmek","ayrılmak"],
+["zıt","bolluk","kıtlık"],
+["zıt","boş","dolu"],
+["zıt","büyük","küçük"],
+["zıt","cesur","korkak"],
+["zıt","cömert","cimri"],
+["zıt","çalışkan","tembel"],
+["zıt","dar","geniş"],
+["zıt","derin","sığ"],
+["zıt","doğal","yapay"],
+["zıt","doğru","yanlış"],
+["zıt","doğu","batı"],
+["zıt","dost","düşman"],
+["zıt","düzenli","dağınık"],
+["zıt","eğri","düz"],
+["zıt","eksik","fazla"],
+["zıt","erken","geç"],
+["zıt","eski","yeni"],
+["zıt","evcil","yabani"],
+["zıt","fakir","zengin"],
+["zıt","gece","gündüz"],
+["zıt","gelmek","gitmek"],
+["zıt","genç","yaşlı"],
+["zıt","gerçek","sahte"],
+["zıt","geri","ileri"],
+["zıt","girmek","çıkmak"],
+["zıt","güçlü","zayıf"],
+["zıt","gülmek","ağlamak"],
+["zıt","güzel","çirkin"],
+["zıt","hatırlamak","unutmak"],
+["zıt","hızlı","yavaş"],
+["zıt","ıslak","kuru"],
+["zıt","iç","dış"],
+["zıt","ince","kalın"],
+["zıt","iyi","kötü"],
+["zıt","kabul","ret"],
+["zıt","kâr","zarar"],
+["zıt","kazanmak","kaybetmek"],
+["zıt","kısa","uzun"],
+["zıt","kolay","zor"],
+["zıt","kuzey","güney"],
+["zıt","mutlu","üzgün"],
+["zıt","önce","sonra"],
+["zıt","özgür","tutsak"],
+["zıt","pahalı","ucuz"],
+["zıt","parlak","mat"],
+["zıt","sağ","sol"],
+["zıt","sağlam","çürük"],
+["zıt","savaş","barış"],
+["zıt","sert","yumuşak"],
+["zıt","sıcak","soğuk"],
+["zıt","sık","seyrek"],
+["zıt","taze","bayat"],
+["zıt","temiz","kirli"],
+["zıt","uzak","yakın"],
+["zıt","üretim","tüketim"],
+["zıt","var","yok"],
+["zıt","yararlı","zararlı"],
+["zıt","yenmek","yenilmek"]
+];
+var X={"istiklal":["özgür"],"hür":["bağımsızlık"],"kural":["yasa"],"kanun":["kaide"],"anı":["hafıza"],"bellek":["hatıra"],"mutlu":["sevinç"],"neşe":["mesut"],"endişe":["kuşku"],"şüphe":["kaygı"],"öneri":["davet"],"çağrı":["teklif"],"millet":["yurt"],"vatan":["ulus"],"aşağı":["yüksek"],"alçak":["yukarı"],"az":["fazla"],"eksik":["çok"],"erken":["sonra"],"önce":["geç"],"gerçek":["yapay"],"doğal":["sahte"],"sağlam":["zayıf"],"güçlü":["çürük"],"kâr":["zararlı"],"yararlı":["zarar"],"kazanmak":["yenilmek"],"yenmek":["kaybetmek"],"sık":["dağınık"],"parlak":["karanlık"],"geri":["ön"],"arka":["ileri"]};
+var $=function(i){return document.getElementById(i)};
+var mode="karma",Q=[],i=0,score=0,locked=false;
+function shuf(a){a=a.slice();for(var k=a.length-1;k>0;k--){var j=Math.floor(Math.random()*(k+1));var t=a[k];a[k]=a[j];a[j]=t}return a}
+function show(id){["start","game","end"].forEach(function(s){$(s).classList.toggle("hide",s!==id)})}
+document.querySelectorAll(".sel button").forEach(function(b){
+  b.onclick=function(){mode=b.dataset.m;document.querySelectorAll(".sel button").forEach(function(x){x.setAttribute("aria-pressed",x===b)})}
+});
+function begin(){
+  var pool=D.filter(function(d){return mode==="karma"||d[0]===mode});
+  Q=shuf(pool).slice(0,10).map(function(d){
+    var ans=D.filter(function(x){return x[0]===d[0]}).map(function(x){return x[2]});
+    var bad=(X[d[1]]||[]).concat([d[1],d[2]]);
+    var w=shuf(ans).filter(function(a){return bad.indexOf(a)<0}).slice(0,3);
+    return [d[0],d[1],d[2],w];
+  });i=0;score=0;show("game");ask();
+}
+function ask(){
+  locked=false;var d=Q[i];
+  $("no").textContent="Soru "+(i+1)+"/"+Q.length;
+  $("sc").textContent="⭐ "+score;
+  $("pb").style.width=(i/Q.length*100)+"%";
+  var e=d[0]==="eş";
+  $("tag").textContent=e?"Eş anlamlısı hangisi?":"Zıt anlamlısı hangisi?";
+  $("tag").className="tag "+(e?"e":"z");
+  $("sym").textContent=e?"=":"↔";
+  $("sym").style.color=e?"var(--eş)":"var(--zıt)";
+  $("word").textContent=d[1];
+  $("fb").textContent="";$("fb").className="fb";
+  $("next").classList.add("hide");
+  var box=$("opts");box.innerHTML="";
+  shuf([d[2]].concat(d[3])).forEach(function(o){
+    var b=document.createElement("button");b.className="opt";b.textContent=o;
+    b.onclick=function(){pick(b,o)};box.appendChild(b);
+  });
+}
+function pick(btn,o){
+  if(locked)return;locked=true;
+  var d=Q[i],right=o===d[2],e=d[0]==="eş";
+  document.querySelectorAll(".opt").forEach(function(b){
+    b.disabled=true;
+    if(b.textContent===d[2])b.classList.add("ok");
+  });
+  if(right){score++;$("sc").textContent="⭐ "+score;
+    $("fb").textContent="Doğru! "+d[1]+(e?" = ":" ↔ ")+d[2];$("fb").className="fb ok";
+  }else{btn.classList.add("bad");
+    $("fb").textContent="Olmadı. Doğrusu: "+d[1]+(e?" = ":" ↔ ")+d[2];$("fb").className="fb bad";
+  }
+  $("next").textContent=i===Q.length-1?"Sonucu gör":"Sonraki";
+  $("next").classList.remove("hide");$("next").focus();
+}
+$("next").onclick=function(){
+  i++;if(i<Q.length){ask();return}
+  $("pb").style.width="100%";
+  var n=score>=9?3:score>=6?2:score>=3?1:0;
+  $("stars").textContent="★★★".slice(0,n)+"☆☆☆".slice(0,3-n);
+  $("stars").style.color="var(--sun)";
+  $("final").textContent=score+" / "+Q.length;
+  $("msg").textContent=score>=9?"Harikasın! Kelime ustası oldun!":score>=6?"Çok iyi! Biraz daha çalışırsan tam puan senin.":"İyi başladın! Tekrar oynayarak daha çok kelime öğren.";
+  show("end");
+};
+$("play").onclick=begin;$("again").onclick=function(){show("start")};
+</script>
+</body>
+</html>
